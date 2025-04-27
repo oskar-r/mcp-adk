@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { DocItem, SearchIndex, SearchDoc } from './types.js';
+import { DocItem, SearchIndex, SearchDoc } from '../types/types.js';
 import lunr from 'lunr';
 
 class DocFetcher {
@@ -95,7 +95,8 @@ class DocFetcher {
       const url = new URL(path, this.baseUrl).toString();
       console.info('Fetching documentation content from:', url);
       const content = await this.fetchUrl(url);
-      return this.parseDocContent(content);
+      const parsedContent = this.parseDocContent(content);
+      return this.cleanHtml(parsedContent);
     } catch (error) {
       console.error(`Failed to fetch doc content for ${path}:`, error);
       return 'Unable to fetch documentation content.';

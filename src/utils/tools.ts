@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { docFetcher } from './docFetcher.js';
-import { cleanHtml } from '../services/documentationService.js';
 
 /**
  * Common tool implementations for the ADK documentation service.
@@ -101,13 +100,11 @@ export async function getDocumentHandler(params: { path?: string | null, title?:
   
   const content = await docFetcher.fetchDocContent(docUrl);
   
-  // Clean HTML from content
-  const cleanedContent = cleanHtml(content);
   
   // Log the document response for debugging
   const responseData = {
     title: docTitle,
-    content: cleanedContent,
+    content: content,
     url: docUrl
   };
   
@@ -129,7 +126,7 @@ export const toolSchemas = {
     query: z.string().describe("The search query")
   },
   getDocument: {
-    path: z.string().optional().nullable().describe("The path or URL of the document"),
-    title: z.string().optional().nullable().describe("The title of the document")
+    path: z.nullable(z.string().optional().describe("The path or URL of the document")),
+    title: z.nullable(z.string().optional().describe("The title of the document"))
   }
 }; 
